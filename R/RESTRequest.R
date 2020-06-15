@@ -1,7 +1,7 @@
 catch_error <- function(r) {
     if (status_code(r) == 403 || status_code(r) == 401) {
         message(
-            "An error has occured when sending a REST request \n",
+
             "possible reason is that you do not have the access rights, ",
             "please set your credentials via 'gcs_cloud_auth()'."
         )
@@ -189,12 +189,6 @@ download_data_to_disk <- function(full_path_vector, disk_path) {
         add_headers(Authorization = auth),
         write_disk(disk_path, overwrite = TRUE)
     )
-    if (status_code(r) == 403) {
-        stop(
-            "An error has occured when reading from the connection\n",
-            "You are not authorized via 'gcs_cloud_auth()'"
-        )
-    }
     catch_error(r)
 }
 
@@ -227,7 +221,6 @@ list_files <-
         "&prefix=", URLencode(path_string, reserved = TRUE),
         "&pageToken=", next_page_token
     )
-    auth <- get_token()
     r <- GET(
         url,
         add_headers(
@@ -254,17 +247,16 @@ list_files <-
 }
 
 
-get_file_meta <- function(full_path_vector, noError = FALSE) {
+get_file_meta <- function(full_path_vector, no_error = FALSE) {
     root_url <- json_url(full_path_vector)
     url <- paste0(root_url, "?alt=json")
-    auth <- get_token()
     r <- GET(
         url,
         add_headers(
             Authorization = get_token()
         )
     )
-    if (status_code(r) == 404 && noError) {
+    if (status_code(r) == 404 && no_error) {
         return(NULL)
     }
     catch_error(r)

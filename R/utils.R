@@ -94,8 +94,6 @@ get_google_URI <- function(bucket, file, full_path_vector = NULL) {
 decompose_google_URI <- function(x, is_folder = NULL) {
     if (is_google_uri(x)) {
         x <- substring(x, first = 6)
-    } else {
-        ## FIX ME
     }
 
     if (is.null(is_folder)) {
